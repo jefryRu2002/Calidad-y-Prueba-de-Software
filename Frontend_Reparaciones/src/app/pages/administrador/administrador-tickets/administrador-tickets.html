@@ -1,0 +1,163 @@
+@if (ordenCreada) {
+    <div class="notificacion-exito">
+        <span class="notif-icono">✅</span>
+        <span>¡Orden <strong>#OT-{{ idOrdenCreada }}</strong> creada y técnico asignado!</span>
+    </div>
+}
+@if (exito && !ordenCreada) {
+    <div class="notificacion-exito">
+        <span class="notif-icono">✅</span>
+        <span>{{ exito }}</span>
+    </div>
+}
+
+<div class="tickets-container">
+    <div class="header">
+        <div class="titulo">🎫 <h2>TICKETS PENDIENTES</h2></div>
+        <div class="usuario">👤 Administrador</div>
+    </div>
+    <div class="contenido">
+        <div class="historial">
+            <h3>Reportes por procesar</h3>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">
+                Aquí aparecen los reportes que aún no han sido convertidos en órdenes de trabajo.
+            </p>
+
+            <div class="acciones">
+                <input type="text"
+                       [(ngModel)]="busquedaCliente"
+                       (ngModelChange)="filtrarTickets()"
+                       placeholder="🔍 Buscar ticket por cliente...">
+                @if (busquedaCliente) {
+                    <button class="btn-limpiar" (click)="limpiarBusqueda()">✕ Limpiar</button>
+                }
+                <button class="btn-recargar" (click)="recargarDatos()" [disabled]="actualizando || cargando">
+                    {{ actualizando ? '⏳ Actualizando...' : '🔄 Actualizar' }}
+                </button>
+            </div>
+
+            @if (cargando) { 
+                <div class="loading">⏳ Cargando tickets...</div> 
+            }
+            @if (errorCarga && !cargando) { 
+                <div class="error">❌ {{ mensajeError }}</div> 
+            }
+
+            @if (!cargando && !errorCarga) {
+                @if (ticketsFiltrados.length === 0) {
+                    <div class="empty-state" style="text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 48px; margin-bottom: 12px;">✅</div>
+                        <h3 style="color: #10b981;">¡Todo al día!</h3>
+                        <p style="color: #64748b;">No hay reportes pendientes de procesar</p>
+                    </div>
+                } @else {
+                    <div class="table-responsive">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Cliente</th>
+                                    <th>Marca</th>
+                                    <th>Modelo</th>
+                                    <th>Tipo</th>
+                                    <th>Serie</th>
+                                    <th>Descripción</th>
+                                    <th>Fecha</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (ticket of ticketsFiltrados; track ticket.id) {
+                                    <tr>
+                                        <td><strong>#{{ ticket.id }}</strong></td>
+                                        <td>{{ ticket.cliente }}</td>
+                                        <td>{{ ticket.marca }}</td>
+                                        <td>{{ ticket.modelo }}</td>
+                                        <td>{{ ticket.tipoEquipo }}</td>
+                                        <td>{{ ticket.numeroSerie }}</td>
+                                        <td class="descripcion-cell">{{ ticket.descripcion }}</td>
+                                        <td>{{ ticket.fecha }}</td>
+                                        <td>
+                                            <button class="btn-orden" (click)="abrirModalOrden(ticket)">
+                                                ➕ Crear Orden
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CREAR ORDEN -->
+@if (mostrarModalOrden) {
+    <div class="modal-overlay" (click)="cerrarModalOrden()">
+        <div class="modal-card" (click)="$event.stopPropagation()">
+            <div class="modal-header">
+                <h3>📋 Crear Orden de Trabajo</h3>
+                <button class="btn-close" (click)="cerrarModalOrden()">✕</button>
+            </div>
+            @if (ticketSeleccionado) {
+                <div class="ticket-info">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Cliente:</span>
+                            <span class="value">{{ ticketSeleccionado.cliente }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Marca:</span>
+                            <span class="value">{{ ticketSeleccionado.marca }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Modelo:</span>
+                            <span class="value">{{ ticketSeleccionado.modelo }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Tipo:</span>
+                            <span class="value">{{ ticketSeleccionado.tipoEquipo }}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Serie:</span>
+                            <span class="value">{{ ticketSeleccionado.numeroSerie }}</span>
+                        </div>
+                        <div class="info-item full-width">
+                            <span class="label">Falla:</span>
+                            <span class="value descripcion-falla">{{ ticketSeleccionado.descripcion }}</span>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="formulario-orden">
+                <div class="form-group form-group-full">
+                    <label>🔧 Técnico Asignado</label>
+                    <select [(ngModel)]="orden.id_tecnico">
+                        <option value="" disabled selected>Seleccione un técnico...</option>
+                        @for (tecnico of tecnicos; track tecnico.id) {
+                            <option [value]="tecnico.id">👨‍🔧 {{ tecnico.nombreCompleto }}</option>
+                        }
+                    </select>
+                    @if (cargandoTecnicos) { 
+                        <small class="loading-text">⏳ Cargando técnicos...</small> 
+                    }
+                </div>
+                <div class="flujo-estados">
+                    <p class="flujo-titulo">📊 La orden iniciará en estado:</p>
+                    <span class="paso-activo-grande">👤 ASIGNADO</span>
+                </div>
+            </div>
+            @if (errorCrear) { 
+                <div class="alerta-error-modal">⚠️ {{ errorCrear }}</div> 
+            }
+            <div class="botones">
+                <button class="cancelar" (click)="cerrarModalOrden()">Cancelar</button>
+                <button class="guardar" (click)="guardarOrden()" [disabled]="creandoOrden || !orden.id_tecnico">
+                    {{ creandoOrden ? '⏳ Creando...' : '📋 Crear Orden' }}
+                </button>
+            </div>
+        </div>
+    </div>
+}
