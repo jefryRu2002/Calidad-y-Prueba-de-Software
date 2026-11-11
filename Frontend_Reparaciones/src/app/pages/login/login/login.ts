@@ -70,7 +70,6 @@ export class Login {
   }
 
   // ==================== LÓGICA DE BLOQUEO POR USUARIO ====================
-  
   private obtenerIntentos(usuario: string): number {
     const clave = `coltech_intentos_${usuario.toLowerCase().trim()}`;
     return Number(localStorage.getItem(clave) || '0');
@@ -86,7 +85,79 @@ export class Login {
     localStorage.removeItem(clave);
   }
 
-  // ==================== INICIAR SESIÓN ====================
+  abrirCalendario(event: Event) {
+    const input = event.target as HTMLInputElement;
+    input.showPicker?.();
+  }
+
+  validarDni(): boolean {
+    if (!this.dni || this.dni.length !== 8) {
+      this.mostrarErrorRegistro('DNI inválido (8 dígitos)');
+      return false;
+    }
+    return true;
+  }
+
+  validarNombres(): boolean {
+    if (!this.nombres.trim()) {
+      this.mostrarErrorRegistro('Ingresa tus nombres');
+      return false;
+    }
+    return true;
+  }
+
+  validarApellidos(): boolean {
+    if (!this.apellidos.trim()) {
+      this.mostrarErrorRegistro('Ingresa tus apellidos');
+      return false;
+    }
+    return true;
+  }
+
+  validarCorreo(): boolean {
+    if (!this.correo?.includes('@')) {
+      this.mostrarErrorRegistro('Correo inválido');
+      return false;
+    }
+    return true;
+  }
+
+  validarTelefono(): boolean {
+    if (!this.telefono || this.telefono.length !== 9) {
+      this.mostrarErrorRegistro('Teléfono inválido (debe tener 9 dígitos)');
+      return false;
+    }
+    if (!/^\d{9}$/.test(this.telefono)) {
+      this.mostrarErrorRegistro('Teléfono inválido (solo números, 9 dígitos)');
+      return false;
+    }
+    return true;
+  }
+
+  validarFechaNacimiento(): boolean {
+    if (!this.fechaNacimiento) {
+      this.mostrarErrorRegistro('Debes ingresar tu fecha de nacimiento');
+      return false;
+    }
+    return true;
+  }
+
+  validarContrasena(): boolean {
+    if (this.contrasenaRegistro.length < 6) {
+      this.mostrarErrorRegistro('Contraseña muy corta (mín 6)');
+      return false;
+    }
+    return true;
+  }
+
+  validarConfirmacion(): boolean {
+    if (this.contrasenaRegistro !== this.confirmarContrasena) {
+      this.mostrarErrorRegistro('Las contraseñas no coinciden');
+      return false;
+    }
+    return true;
+  }
+
   iniciarSesion() {
     if (!this.usuario || !this.contrasena) {
       this.mostrarErrorLogin('Ingresa usuario y contraseña');
@@ -204,7 +275,6 @@ export class Login {
     }
   }
 
-  // ==================== OLVIDO CONTRASEÑA ====================
   abrirOlvido() {
     if (this.timeoutErrorLogin) clearTimeout(this.timeoutErrorLogin);
     if (this.timeoutErrorRegistro) clearTimeout(this.timeoutErrorRegistro);
@@ -239,7 +309,6 @@ export class Login {
     });
   }
 
-  // ==================== REGISTRO ====================
   abrirRegistro() {
     if (this.timeoutErrorRegistro) clearTimeout(this.timeoutErrorRegistro);
     if (this.timeoutErrorLogin) clearTimeout(this.timeoutErrorLogin);
@@ -328,31 +397,17 @@ export class Login {
   }
 
   // ==================== REGISTRAR ====================
-  private validarFormularioRegistro(): string | null {
-    if (!this.dni || this.dni.length !== 8) return 'DNI inválido (8 dígitos)';
-    if (!this.nombres.trim()) return 'Ingresa tus nombres';
-    if (!this.apellidos.trim()) return 'Ingresa tus apellidos';
-    if (!this.fechaNacimiento) return 'Debes ingresar tu fecha de nacimiento';
-    if (!this.correo?.includes('@')) return 'Correo inválido';
-    
-    if (!this.telefono || this.telefono.length !== 9 || !/^\d{9}$/.test(this.telefono)) {
-      return 'Teléfono inválido (debe tener 9 dígitos)';
-    }
-    
-    if (this.contrasenaRegistro.length < 6) return 'Contraseña muy corta (mín 6)';
-    if (this.contrasenaRegistro !== this.confirmarContrasena) return 'Las contraseñas no coinciden';
-    
-    return null;
-  }
-
   registrarUsuario() {
     this.errorRegistro = '';
-    
-    const errorValidacion = this.validarFormularioRegistro();
-    if (errorValidacion) {
-      this.mostrarErrorRegistro(errorValidacion);
-      return;
-    }
+
+    if (!this.validarDni()) return;
+    if (!this.validarNombres()) return;
+    if (!this.validarApellidos()) return;
+    if (!this.validarCorreo()) return;
+    if (!this.validarTelefono()) return;
+    if (!this.validarFechaNacimiento()) return;
+    if (!this.validarContrasena()) return;
+    if (!this.validarConfirmacion()) return;
 
     this.registrando = true;
     this.cdr.detectChanges();
