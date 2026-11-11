@@ -26,7 +26,6 @@ export class AdministradorOrdenTrabajo implements OnInit, OnDestroy {
   private apiUrl = 'http://localhost:8080/api';
   private intervaloActualizacion: any;
 
-  // Estados oficiales (sin PENDIENTE)
   estadosOrden = [
     'ASIGNADO',
     'EN_PROCESO',
@@ -151,7 +150,6 @@ export class AdministradorOrdenTrabajo implements OnInit, OnDestroy {
   }
 
   procesarOrdenes(data: any[]): void {
-    // 🔥 Filtrar órdenes en estado PENDIENTE (no se muestran aquí)
     const ordenesFiltradas = (data || []).filter(ot => 
       ot.estado && ot.estado !== 'PENDIENTE'
     );
@@ -198,7 +196,6 @@ export class AdministradorOrdenTrabajo implements OnInit, OnDestroy {
     this.ordenes.sort((a, b) => b.idOrden - a.idOrden);
   }
 
-  // ==================== ESTADOS ====================
   getEstadoBadge(estado: string): string {
     const badges: Record<string, string> = {
       'ASIGNADO': '👤 Asignado',
@@ -231,7 +228,6 @@ export class AdministradorOrdenTrabajo implements OnInit, OnDestroy {
     return clases[estado] || '';
   }
 
-  // ==================== FILTROS ====================
   get ordenesFiltradas() {
     let f = this.ordenes;
     const q = this.busquedaCliente.toLowerCase().trim();
@@ -250,7 +246,6 @@ export class AdministradorOrdenTrabajo implements OnInit, OnDestroy {
     return f;
   }
 
-  // ==================== MODAL EDITAR ====================
   abrirModalEditar(orden: any): void {
     this.ordenSeleccionada = { 
       ...orden,

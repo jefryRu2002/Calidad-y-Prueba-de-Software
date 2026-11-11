@@ -10,13 +10,13 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./cliente-cotizacion.css']
 })
 export class ClienteCotizacion implements OnInit {
-  
+
   cotizaciones: any[] = [];
   cargando = false;
   error = '';
   exito = '';
   idCliente = 0;
-  
+
   private apiUrl = 'http://localhost:8080/api';
 
   constructor(
@@ -27,6 +27,7 @@ export class ClienteCotizacion implements OnInit {
   ngOnInit(): void {
     const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
     this.idCliente = Number(usuario.idPersona) || 0;
+    console.log('👤 idCliente desde localStorage:', this.idCliente);
     this.cargarCotizaciones();
   }
 
@@ -35,13 +36,15 @@ export class ClienteCotizacion implements OnInit {
     this.error = '';
     this.cdr.detectChanges();
 
-    // 1. Obtener todas las cotizaciones
     this.http.get<any[]>(`${this.apiUrl}/cotizaciones`).subscribe({
       next: (cotizaciones) => {
-        // 2. Obtener las órdenes para saber cuáles son mis órdenes
+        console.log('📦 Cotizaciones RAW:', cotizaciones);
+
         this.http.get<any[]>(`${this.apiUrl}/ordenes-trabajo`).subscribe({
           next: (ordenes) => {
-            // IDs de las órdenes de este cliente
+            console.log('📦 Órdenes RAW:', ordenes);
+
+            // 1. IDs de mis órdenes (probando todas las variantes del campo cliente)
             const misOrdenesIds = new Set(
               (ordenes || [])
                 .filter(o => {
@@ -52,16 +55,23 @@ export class ClienteCotizacion implements OnInit {
                 })
                 .map(o => Number(o.idOrden))
             );
+            console.log('🔗 misOrdenesIds:', Array.from(misOrdenesIds));
 
-            // Filtrar cotizaciones: de mis órdenes Y con estado válido para ver
+            // 2. Filtrar cotizaciones
             const misCotizaciones = (cotizaciones || []).filter(c => {
               const idOrdenCot = Number(c.idOrden);
-              const estadoOk = 
-                c.estado === 'APROBADA_ADMIN' || 
-                c.estado === 'APROBADA_CLIENTE' || 
+              const estadoOk =
+                c.estado === 'APROBADA_ADMIN' ||
+                c.estado === 'APROBADA_CLIENTE' ||
                 c.estado === 'RECHAZADA_CLIENTE';
-              return misOrdenesIds.has(idOrdenCot) && estadoOk;
+              const esMia = misOrdenesIds.has(idOrdenCot);
+              if (!esMia || !estadoOk) {
+                console.log('⏭️ Descartada:', { idCotizacion: c.idCotizacion, idOrden: c.idOrden, estado: c.estado, esMia, estadoOk });
+              }
+              return esMia && estadoOk;
             });
+
+            console.log('✅ Cotizaciones filtradas:', misCotizaciones.length);
 
             this.cotizaciones = misCotizaciones.map(c => ({
               idCotizacion: c.idCotizacion,
@@ -89,7 +99,7 @@ export class ClienteCotizacion implements OnInit {
         });
       },
       error: (err) => {
-        console.error('❌ Error:', err);
+        console.error('❌ Error al cargar cotizaciones:', err);
         this.error = '❌ Error al cargar cotizaciones';
         this.cargando = false;
         this.cdr.detectChanges();
@@ -97,10 +107,8 @@ export class ClienteCotizacion implements OnInit {
     });
   }
 
-  // ==================== ACEPTAR ====================
   aceptar(id: number): void {
     if (!confirm('¿Aceptar esta cotización? Se procederá con la reparación.')) return;
-
     this.cargando = true;
     this.cdr.detectChanges();
 
@@ -122,10 +130,8 @@ export class ClienteCotizacion implements OnInit {
     });
   }
 
-  // ==================== RECHAZAR ====================
   rechazar(id: number): void {
     if (!confirm('¿Rechazar esta cotización? El equipo será devuelto sin reparación.')) return;
-
     this.cargando = true;
     this.cdr.detectChanges();
 
@@ -147,25 +153,22 @@ export class ClienteCotizacion implements OnInit {
     });
   }
 
-  // ==================== UTILIDADES ====================
   formatearMonto(monto: number): string {
     if (!monto || monto === 0) return 'S/ 0.00';
-    return new Intl.NumberFormat('es-PE', { 
-      style: 'currency', 
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
       currency: 'PEN',
-      minimumFractionDigits: 2 
+      minimumFractionDigits: 2
     }).format(monto);
   }
 
   formatearFecha(fecha: string): string {
     if (!fecha) return 'Sin fecha';
-    try { 
+    try {
       return new Date(fecha).toLocaleDateString('es-PE', {
         day: '2-digit', month: '2-digit', year: 'numeric'
-      }); 
-    } catch { 
-      return fecha; 
-    }
+      });
+    } catch { return fecha; }
   }
 
   recargar(): void {

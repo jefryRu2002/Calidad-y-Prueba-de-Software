@@ -1,0 +1,35 @@
+{
+  "test": "TC-015",
+  "nombre": "test_diagnostico_guardado",
+  "historia": "HU-15",
+  "fechaInicio": "2026-10-30T20:17:26.984Z",
+  "fases": {
+    "loginTecnico": {
+      "estado": "PASÓ",
+      "detalle": "usuario=adriana@gmail.com"
+    },
+    "navegacionEvaluacion": {
+      "estado": "PASÓ",
+      "detalle": "en sección Evaluación"
+    },
+    "seleccionOrden": {
+      "estado": "PASÓ",
+      "detalle": "orden seleccionada"
+    },
+    "registrarRepuestoYManoObra": {
+      "estado": "FALLÓ",
+      "detalle": "No se encontró visible 'input repuesto' tras 8000 ms."
+    },
+    "guardarCotizacion": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "validarMensajeExito": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    }
+  },
+  "resultadoFinal": "FALLÓ",
+  "errorDetalle": "FASE registrarRepuestoYManoObra: No se encontró visible 'input repuesto' tras 8000 ms.",
+  "evidencia": "C:\\Users\\jefryRuiz\\Desktop\\Pagina_Web_Reparaciones\\Pagina_Web_Reparaciones\\pruebas-automatizadas\\tests\\artifacts\\TC-015_evidencia_diagnostico_exito_FALLO.png"
+}

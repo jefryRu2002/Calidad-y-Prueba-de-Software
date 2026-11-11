@@ -1,0 +1,52 @@
+{
+  "test": "TC-013",
+  "nombre": "test_terminar_reparacion_genera_notificacion_admin",
+  "historia": "HU-13",
+  "fechaInicio": "2026-10-30T20:00:17.465Z",
+  "fases": {
+    "loginTecnico": {
+      "estado": "PASÓ",
+      "detalle": "usuario=adriana@gmail.com"
+    },
+    "navegacionPruebas": {
+      "estado": "PASÓ",
+      "detalle": "en /tecnico/pruebas-funcionamiento"
+    },
+    "seleccionOrden": {
+      "estado": "FALLÓ",
+      "detalle": "No se encontró orden seleccionable"
+    },
+    "marcarPruebasOK": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "guardarResultados": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "estadoTerminado": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "logoutTecnico": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "loginAdmin": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "panelNotificaciones": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "notificacionRecibida": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    }
+  },
+  "resultadoFinal": "FALLÓ",
+  "errorDetalle": "FASE seleccionOrden: No se encontró orden seleccionable",
+  "idOrdenDetectado": null,
+  "evidencia": "C:\\Users\\jefryRuiz\\Desktop\\Pagina_Web_Reparaciones\\Pagina_Web_Reparaciones\\pruebas-automatizadas\\tests\\artifacts\\TC-013_evidencia_terminar_reparacion_notificacion_admin_FALLO.png"
+}

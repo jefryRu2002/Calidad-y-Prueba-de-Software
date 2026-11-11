@@ -1,0 +1,38 @@
+{
+  "test": "TC-017",
+  "nombre": "test_registrar_solicitud_Particion_invalida",
+  "historia": "HU-16",
+  "fechaInicio": "2026-10-30T20:27:23.401Z",
+  "fases": {
+    "loginCliente": {
+      "estado": "PASÓ",
+      "detalle": "usuario=adriana@gmail.com"
+    },
+    "navegacionGenerarSolicitud": {
+      "estado": "PASÓ",
+      "detalle": "en /cliente/generar-solicitud"
+    },
+    "completarFormularioInvalido": {
+      "estado": "PASÓ",
+      "detalle": "desc=\"falla PC\" (8 chars < 10)"
+    },
+    "enviarReporte": {
+      "estado": "PASÓ",
+      "detalle": "click ejecutado"
+    },
+    "validarErrorDescripcionCorta": {
+      "estado": "PASÓ",
+      "detalle": "\"⚠️ Descripción muy corta (mínimo 10 caracteres) (Click para cerrar)\""
+    },
+    "validarNoSeRegistro": {
+      "estado": "PASÓ",
+      "detalle": "no apareció pantalla de éxito ni código de operación"
+    }
+  },
+  "resultadoFinal": "PASÓ",
+  "resultadoNegocio": "RECHAZADO",
+  "mensajeErrorCapturado": "⚠️ Descripción muy corta (mínimo 10 caracteres) (Click para cerrar)",
+  "codigoReporte": null,
+  "errorDetalle": null,
+  "evidencia": "C:\\Users\\jefryRuiz\\Desktop\\Pagina_Web_Reparaciones\\Pagina_Web_Reparaciones\\pruebas-automatizadas\\tests\\artifacts\\TC-017_evidencia_registrar_solicitud_Particion_invalida.png"
+}

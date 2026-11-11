@@ -1,0 +1,52 @@
+{
+  "test": "TC-018",
+  "nombre": "test_estado_solicitud_camino_feliz",
+  "historia": "HU-17",
+  "fechaInicio": "2026-10-30T20:32:10.106Z",
+  "fases": {
+    "loginCliente": {
+      "estado": "PASÓ",
+      "detalle": "usuario=adriana@gmail.com"
+    },
+    "navegacionEstadoSolicitudes": {
+      "estado": "PASÓ",
+      "detalle": "en /cliente/estado-solicitud"
+    },
+    "validarCardsResumen": {
+      "estado": "PASÓ",
+      "detalle": "7 cards detectados, Total=1"
+    },
+    "validarTablaVisible": {
+      "estado": "PASÓ",
+      "detalle": "<table.tabla-solicitudes>"
+    },
+    "validarColumnas": {
+      "estado": "PASÓ",
+      "detalle": "columnas presentes: codigo, equipo, tipo, estado, fecha"
+    },
+    "validarAlMenosUnaSolicitud": {
+      "estado": "PASÓ",
+      "detalle": "1 fila(s) con datos detectadas"
+    },
+    "validarContenidoFila": {
+      "estado": "PASÓ",
+      "detalle": "codigo=\"REP-3\", equipo=\"Lenovo Thinkpad\", tipo=\"Laptop\", estado=\"⏳ Pendiente\", fecha=\"30/10/2026\""
+    }
+  },
+  "resultadoFinal": "PASÓ",
+  "filasDetectadas": 1,
+  "columnasDetectadas": [
+    "codigo",
+    "equipo",
+    "tipo",
+    "estado",
+    "fecha",
+    "accion"
+  ],
+  "totalSegunCards": 1,
+  "detalleSolicitudes": [
+    "REP-3 Lenovo Thinkpad Laptop ⏳ Pendiente 30/10/2026 👁️ Ver"
+  ],
+  "errorDetalle": null,
+  "evidencia": "C:\\Users\\jefryRuiz\\Desktop\\Pagina_Web_Reparaciones\\Pagina_Web_Reparaciones\\pruebas-automatizadas\\tests\\artifacts\\TC-018_evidencia_estado_solicitud_camino_feliz.png"
+}

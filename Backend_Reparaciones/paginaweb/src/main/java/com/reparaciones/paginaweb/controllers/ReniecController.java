@@ -19,7 +19,7 @@ public class ReniecController {
 
     private final RestTemplate restTemplate = new RestTemplate();
     
-private final String TOKEN_FACTILIZA = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MDkwMiJ9.vGRiD7TvVmCrW4dKNvE-BlDV398iEyP2lg6mC9m72A8";
+private final String TOKEN_FACTILIZA = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MjY5OCJ9.mqeI5vEXj2isu5ZXp6KuaPZylyKKa9msvFB1hpNi5GE";
     @GetMapping("/dni/{dni}")
     public ResponseEntity<?> consultarDni(@PathVariable String dni) {
         // 1. Limpiamos cualquier espacio invisible al final del DNI

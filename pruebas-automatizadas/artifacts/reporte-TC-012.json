@@ -1,0 +1,36 @@
+{
+  "id": "TC-012",
+  "estado": "FALLÓ",
+  "detalle": "[Paso 2 – Navegar al módulo] No se encontró \"marcador pruebas\". Probados: By(css selector, app-tecnico-pruebas-funcionamiento) | By(css selector, .pruebas-container) | By(css selector, .pruebas-funcionamiento) | By(css selector, form) | By(css selector, table)",
+  "duracion": 24842,
+  "subresultados": {
+    "login": {
+      "estado": "PASÓ",
+      "detalle": "Técnico adriana@gmail.com autenticado"
+    },
+    "navegacion": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "seleccionOrden": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "marcarPruebas": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "guardado": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "estadoTerminado": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    },
+    "botonPago": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    }
+  }
+}

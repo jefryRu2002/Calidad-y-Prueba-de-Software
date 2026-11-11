@@ -1,0 +1,37 @@
+{
+  "test": "TC-016",
+  "nombre": "test_registrar_solicitud_Camino_Feliz",
+  "historia": "HU-16",
+  "fechaInicio": "2026-10-30T20:24:42.294Z",
+  "fases": {
+    "loginCliente": {
+      "estado": "PASÓ",
+      "detalle": "usuario=adriana@gmail.com"
+    },
+    "navegacionGenerarSolicitud": {
+      "estado": "PASÓ",
+      "detalle": "en /cliente/generar-solicitud"
+    },
+    "completarFormulario": {
+      "estado": "PASÓ",
+      "detalle": "tipo=Laptop, serie=SN-2024-001, marca=Lenovo, modelo=Thinkpad, desc=14 chars"
+    },
+    "enviarReporte": {
+      "estado": "PASÓ",
+      "detalle": "click ejecutado"
+    },
+    "validarMensajeExito": {
+      "estado": "PASÓ",
+      "detalle": "\"✅ ¡Reporte registrado exitosamente! Tu código de operación es: REP-3 Guarda este\""
+    },
+    "validarCodigoOperacion": {
+      "estado": "PASÓ",
+      "detalle": "codigo=\"REP-3\""
+    }
+  },
+  "resultadoFinal": "PASÓ",
+  "codigoReporte": "REP-3",
+  "resumenReporte": "Equipo: Lenovo Thinkpad Tipo: Laptop N° Serie: SN-2024-001",
+  "errorDetalle": null,
+  "evidencia": "C:\\Users\\jefryRuiz\\Desktop\\Pagina_Web_Reparaciones\\Pagina_Web_Reparaciones\\pruebas-automatizadas\\tests\\artifacts\\TC-016_evidencia_registrar_solicitud_Camino_Feliz.png"
+}

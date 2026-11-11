@@ -59,16 +59,29 @@ export class AdministradorUsuarios implements OnInit {
       next: (data) => {
         console.log('✅ Usuarios cargados:', data?.length);
         
-        this.usuarios = (data || []).map(u => ({
-          id: u.idPersona,
-          nombre: u.nombre || '',
-          apellido: u.apellido || '',
-          correo: u.correo || '',
-          telefono: u.telefono || '',
-          dni: u.dni || '',
-          rol: u.rol || 'CLIENTE',
-          estado: u.estado === 1 ? 'Activo' : 'Inactivo'
-        }));
+        this.usuarios = (data || []).map(u => {
+          // LÓGICA DE BLOQUEO: Revisar si el Frontend registró 3 intentos fallidos
+          const correoKey = (u.correo || '').toLowerCase().trim();
+          const intentos = Number(localStorage.getItem(`coltech_intentos_${correoKey}`) || '0');
+          
+          let estadoReal = u.estado === 1 ? 'Activo' : 'Inactivo';
+          
+          // Si tiene 3 o más intentos en el navegador, lo mostramos como Bloqueado
+          if (intentos >= 3) {
+            estadoReal = 'Bloqueado';
+          }
+
+          return {
+            id: u.idPersona,
+            nombre: u.nombre || '',
+            apellido: u.apellido || '',
+            correo: u.correo || '',
+            telefono: u.telefono || '',
+            dni: u.dni || '',
+            rol: u.rol || 'CLIENTE',
+            estado: estadoReal // Asignamos el estado calculado
+          };
+        });
 
         this.actualizarContadores();
         this.cargando = false;
@@ -235,8 +248,19 @@ export class AdministradorUsuarios implements OnInit {
     });
   }
 
-  // ==================== CAMBIAR ESTADO ====================
+  // ==================== CAMBIAR ESTADO / DESBLOQUEAR ====================
   cambiarEstado(usuario: any): void {
+    // Si el usuario está bloqueado, al hacer clic lo desbloqueamos borrando sus intentos
+    if (usuario.estado === 'Bloqueado') {
+      const correoKey = (usuario.correo || '').toLowerCase().trim();
+      localStorage.removeItem(`coltech_intentos_${correoKey}`);
+      
+      usuario.estado = 'Activo'; // Actualizamos la vista
+      this.cdr.detectChanges();
+      alert('🔓 Cuenta desbloqueada correctamente. El usuario ya puede iniciar sesión.');
+      return;
+    }
+
     const nuevoEstado = usuario.estado === 'Activo' ? 0 : 1;
     const accion = nuevoEstado === 1 ? 'activar' : 'desactivar';
     
@@ -270,7 +294,6 @@ export class AdministradorUsuarios implements OnInit {
       error: (err) => {
         console.error('❌ Error:', err);
         alert('Error al eliminar');
-        
       }
     });
   }

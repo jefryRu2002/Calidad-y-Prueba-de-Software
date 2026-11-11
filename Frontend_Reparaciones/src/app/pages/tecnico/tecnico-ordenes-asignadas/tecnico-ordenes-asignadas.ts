@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './tecnico-ordenes-asignadas.html',
   styleUrls: ['./tecnico-ordenes-asignadas.css']
 })
-export class TecnicoOrdenesAsignadas implements OnInit {
+export class TecnicoOrdenesAsignadas implements OnInit, OnDestroy {
 
   ordenes: any[] = [];
   cargando = true;
@@ -21,8 +21,8 @@ export class TecnicoOrdenesAsignadas implements OnInit {
   idTecnico = 0;
 
   private apiUrl = 'http://localhost:8080/api';
+  private intervaloRefresco: any = null;
 
-  // Estados que el técnico ve
   private estadosVisibles = [
     'ASIGNADO',
     'EN_PROCESO',
@@ -34,6 +34,30 @@ export class TecnicoOrdenesAsignadas implements OnInit {
     'TERMINADO',
     'ENTREGADO'
   ];
+
+  /**
+   * Transiciones permitidas para el técnico.
+   * Cada estado actual muestra los estados a los que PUEDE pasar.
+   * Los que requieren endpoint especial usan `endpoint`; si no, usan PUT /{id}.
+   */
+  private transiciones: Record<string, { valor: string; texto: string; endpoint?: string }[]> = {
+    'ASIGNADO': [
+      { valor: 'EN_PROCESO', texto: '🔍 Iniciar diagnóstico' }
+    ],
+    'EN_PROCESO': [
+      { valor: 'COTIZADO', texto: '💰 Enviar cotización' }
+    ],
+    'COTIZACION_APROBADA': [
+      { valor: 'EN_REPARACION', texto: '🔧 Iniciar reparación' }
+    ],
+    'EN_REPARACION': [
+      { valor: 'EN_PRUEBAS', texto: '🧪 Pasar a pruebas', endpoint: 'avanzar-pruebas' }
+    ],
+    'EN_PRUEBAS': [
+      { valor: 'TERMINADO', texto: '✅ Terminar (pruebas OK)', endpoint: 'terminar' },
+      { valor: 'EN_REPARACION', texto: '↩️ Volver a reparación', endpoint: 'volver-reparacion' }
+    ]
+  };
 
   constructor(private http: HttpClient, public cdr: ChangeDetectorRef) {}
 
@@ -47,6 +71,7 @@ export class TecnicoOrdenesAsignadas implements OnInit {
 
     if (this.idTecnico > 0) {
       this.cargarOrdenes();
+      this.intervaloRefresco = setInterval(() => this.cargarOrdenes(true), 30000);
     } else {
       this.cargando = false;
       this.error = '❌ No se pudo identificar al técnico. Inicie sesión nuevamente.';
@@ -54,10 +79,16 @@ export class TecnicoOrdenesAsignadas implements OnInit {
     }
   }
 
-  cargarOrdenes(): void {
-    this.cargando = true;
-    this.error = '';
-    this.cdr.detectChanges();
+  ngOnDestroy(): void {
+    if (this.intervaloRefresco) clearInterval(this.intervaloRefresco);
+  }
+
+  cargarOrdenes(silencioso: boolean = false): void {
+    if (!silencioso) {
+      this.cargando = true;
+      this.error = '';
+      this.cdr.detectChanges();
+    }
 
     this.http.get<any[]>(`${this.apiUrl}/ordenes-trabajo`).subscribe({
       next: (data) => {
@@ -65,15 +96,52 @@ export class TecnicoOrdenesAsignadas implements OnInit {
           const idTec = Number(o.idTecnico || o.id_tecnico || 0);
           return idTec === this.idTecnico && this.estadosVisibles.includes(o.estado);
         });
-
         this.cargando = false;
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('❌ Error:', err);
-        this.error = '❌ Error al cargar las órdenes. Verifique la conexión.';
+        if (!silencioso) this.error = '❌ Error al cargar las órdenes. Verifique la conexión.';
         this.cargando = false;
         this.cdr.detectChanges();
+      }
+    });
+  }
+
+  /** Devuelve las opciones de transición válidas para el estado actual */
+  opcionesPara(estado: string): { valor: string; texto: string; endpoint?: string }[] {
+    return this.transiciones[estado] || [];
+  }
+
+  /**
+   * Cambia el estado usando el endpoint correcto:
+   * - Si la transición tiene `endpoint`, llama a PUT /{id}/{endpoint} sin body.
+   * - Si no, llama a PUT /{id} con body { estado }.
+   */
+  cambiarEstado(orden: any, opcion: { valor: string; texto: string; endpoint?: string }): void {
+    if (!opcion) return;
+
+    const id = orden.idOrden || orden.id;
+    this.error = '';
+    this.exito = '';
+
+    const peticion$ = opcion.endpoint
+      ? this.http.put<any>(`${this.apiUrl}/ordenes-trabajo/${id}/${opcion.endpoint}`, {})
+      : this.http.put<any>(`${this.apiUrl}/ordenes-trabajo/${id}`, { estado: opcion.valor });
+
+    peticion$.subscribe({
+      next: () => {
+        // Recargar silenciosamente para traer el estado real del backend
+        this.cargarOrdenes(true);
+        this.exito = `✅ OT-${id} actualizada a "${opcion.texto}"`;
+        this.cdr.detectChanges();
+        setTimeout(() => { this.exito = ''; this.cdr.detectChanges(); }, 3000);
+      },
+      error: (err) => {
+        console.error('❌ Error al cambiar estado:', err);
+        this.error = `❌ No se pudo cambiar el estado: ${err.error?.error || err.message}`;
+        this.cdr.detectChanges();
+        this.cargarOrdenes(true);
       }
     });
   }
@@ -89,7 +157,7 @@ export class TecnicoOrdenesAsignadas implements OnInit {
         const ticket = `OT-${o.idOrden}`.toLowerCase();
         const cliente = (o.nombreCliente || o.cliente || '').toLowerCase();
         const equipo = `${o.marca || ''} ${o.modelo || ''}`.toLowerCase();
-        return ticket.includes(q) || cliente.includes(q) || equipo.includes(q) || 
+        return ticket.includes(q) || cliente.includes(q) || equipo.includes(q) ||
                String(o.idOrden).includes(q);
       });
     }

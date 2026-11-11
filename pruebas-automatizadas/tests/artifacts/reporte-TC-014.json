@@ -1,0 +1,31 @@
+{
+  "test": "TC-014",
+  "nombre": "test_falla_guardar_pruebas_incompletas",
+  "historia": "HU-14",
+  "fechaInicio": "2026-10-30T20:15:22.812Z",
+  "fases": {
+    "loginTecnico": {
+      "estado": "PASÓ",
+      "detalle": "usuario=adriana@gmail.com"
+    },
+    "navegacionPruebas": {
+      "estado": "PASÓ",
+      "detalle": "en /tecnico/pruebas-funcionamiento"
+    },
+    "seleccionOrden": {
+      "estado": "PASÓ",
+      "detalle": "orden seleccionada"
+    },
+    "marcarPruebasIncompletas": {
+      "estado": "FALLÓ",
+      "detalle": "No se pudo marcar ninguna prueba del checklist (no se encontraron controles visibles)."
+    },
+    "intentarGuardarBloqueado": {
+      "estado": "NO_EJECUTADO",
+      "detalle": ""
+    }
+  },
+  "resultadoFinal": "FALLÓ",
+  "errorDetalle": "FASE marcarPruebasIncompletas: No se pudo marcar ninguna prueba del checklist (no se encontraron controles visibles).",
+  "evidencia": "C:\\Users\\jefryRuiz\\Desktop\\Pagina_Web_Reparaciones\\Pagina_Web_Reparaciones\\pruebas-automatizadas\\tests\\artifacts\\TC-014_evidencia_guardar_pruebas_incompletas_FALLO.png"
+}

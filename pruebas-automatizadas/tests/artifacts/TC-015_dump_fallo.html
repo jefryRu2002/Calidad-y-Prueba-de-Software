@@ -1,0 +1,508 @@
+<html lang="en"><head>
+  <script type="module" src="/@vite/client"></script>
+
+  <meta charset="utf-8">
+  <title>FrontendReparaciones</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+<link rel="stylesheet" href="styles.css"><style>
+*[_ngcontent-ng-c1880211882] {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+}
+.tecnico-layout[_ngcontent-ng-c1880211882] {
+  display: flex;
+  min-height: 100vh;
+}
+.main-content[_ngcontent-ng-c1880211882] {
+  flex: 1;
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  min-height: 100vh;
+  padding: 25px;
+  background: #f5f7fb;
+}
+.sidebar[_ngcontent-ng-c1880211882] {
+  width: 240px;
+  height: 100vh;
+  background: #0a0f1a;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 20px 12px;
+  z-index: 100;
+  border-right: 1px solid rgba(59, 130, 246, 0.15);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+}
+.logo[_ngcontent-ng-c1880211882] {
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.logo[_ngcontent-ng-c1880211882]   h2[_ngcontent-ng-c1880211882] {
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 0;
+}
+.logo[_ngcontent-ng-c1880211882]   p[_ngcontent-ng-c1880211882] {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+.user-info[_ngcontent-ng-c1880211882] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+}
+.user-info[_ngcontent-ng-c1880211882]   img[_ngcontent-ng-c1880211882] {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+  border: 2px solid #3b82f6;
+}
+.user-info[_ngcontent-ng-c1880211882]   span[_ngcontent-ng-c1880211882] {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #ffffff;
+}
+.user-info[_ngcontent-ng-c1880211882]   p[_ngcontent-ng-c1880211882] {
+  margin: 2px 0 0 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+.nav-menu[_ngcontent-ng-c1880211882] {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-grow: 1;
+}
+.nav-menu[_ngcontent-ng-c1880211882]   a[_ngcontent-ng-c1880211882] {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9ca3af;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  transition: all 0.25s ease;
+}
+.nav-menu[_ngcontent-ng-c1880211882]   a[_ngcontent-ng-c1880211882]:hover {
+  background: #1a253b;
+  color: #ffffff;
+  transform: translateX(4px);
+}
+.nav-menu[_ngcontent-ng-c1880211882]   a.active[_ngcontent-ng-c1880211882], 
+.nav-menu[_ngcontent-ng-c1880211882]   a.router-link-active[_ngcontent-ng-c1880211882] {
+  background:
+    linear-gradient(
+      135deg,
+      #3b82f6,
+      #2563eb);
+  color: #ffffff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+.icon[_ngcontent-ng-c1880211882] {
+  min-width: 24px;
+  text-align: center;
+}
+.sidebar-footer[_ngcontent-ng-c1880211882] {
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
+}
+.btn-logout[_ngcontent-ng-c1880211882] {
+  width: 100%;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  color: white;
+  background:
+    linear-gradient(
+      135deg,
+      #dc2626,
+      #b91c1c);
+  transition: all 0.3s ease;
+}
+.btn-logout[_ngcontent-ng-c1880211882]:hover {
+  background:
+    linear-gradient(
+      135deg,
+      #b91c1c,
+      #991b1b);
+  transform: translateY(-2px);
+}
+/*# sourceMappingURL=/tecnico-layout.css.map */</style><style>
+*[_ngcontent-ng-c1075726310] {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.eval-page[_ngcontent-ng-c1075726310] {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: 100vh;
+  font-family:
+    "Segoe UI",
+    system-ui,
+    sans-serif;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.header[_ngcontent-ng-c1075726310] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.header[_ngcontent-ng-c1075726310]   h1[_ngcontent-ng-c1075726310] {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+}
+.header[_ngcontent-ng-c1075726310]   p[_ngcontent-ng-c1075726310] {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 2px;
+}
+.btn-recargar[_ngcontent-ng-c1075726310] {
+  padding: 8px 18px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+.btn-recargar[_ngcontent-ng-c1075726310]:hover {
+  background: #1d4ed8;
+}
+.btn-recargar[_ngcontent-ng-c1075726310]:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+.alerta-error[_ngcontent-ng-c1075726310], 
+.alerta-exito[_ngcontent-ng-c1075726310] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.alerta-error[_ngcontent-ng-c1075726310] {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+.alerta-exito[_ngcontent-ng-c1075726310] {
+  background: #f0fdf4;
+  color: #065f46;
+  border: 1px solid #bbf7d0;
+}
+.alerta-error[_ngcontent-ng-c1075726310]   button[_ngcontent-ng-c1075726310], 
+.alerta-exito[_ngcontent-ng-c1075726310]   button[_ngcontent-ng-c1075726310] {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: inherit;
+  padding: 0 4px;
+}
+.loading[_ngcontent-ng-c1075726310] {
+  text-align: center;
+  padding: 80px 20px;
+  color: #64748b;
+}
+.spinner[_ngcontent-ng-c1075726310] {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: _ngcontent-ng-c1075726310_spin 0.7s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes _ngcontent-ng-c1075726310_spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.empty[_ngcontent-ng-c1075726310] {
+  text-align: center;
+  padding: 80px 20px;
+  color: #94a3b8;
+  background: #fff;
+  border-radius: 12px;
+  border: 2px dashed #e2e8f0;
+}
+.empty[_ngcontent-ng-c1075726310]   span[_ngcontent-ng-c1075726310] {
+  font-size: 48px;
+  display: block;
+  margin-bottom: 12px;
+}
+.table-responsive[_ngcontent-ng-c1075726310] {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+table[_ngcontent-ng-c1075726310] {
+  width: 100%;
+  border-collapse: collapse;
+}
+th[_ngcontent-ng-c1075726310] {
+  background: #1e293b;
+  color: #fff;
+  padding: 12px 14px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+}
+td[_ngcontent-ng-c1075726310] {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+}
+tbody[_ngcontent-ng-c1075726310]   tr[_ngcontent-ng-c1075726310]:hover {
+  background: #f8fafc;
+}
+.text-center[_ngcontent-ng-c1075726310] {
+  text-align: center;
+  padding: 30px;
+  color: #94a3b8;
+}
+.estado-badge[_ngcontent-ng-c1075726310] {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.estado-badge.pendiente[_ngcontent-ng-c1075726310] {
+  background: #fef3c7;
+  color: #92400e;
+}
+.estado-badge.en_proceso[_ngcontent-ng-c1075726310] {
+  background: #dbeafe;
+  color: #1e40af;
+}
+.btn-evaluar[_ngcontent-ng-c1075726310] {
+  padding: 6px 14px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.btn-evaluar[_ngcontent-ng-c1075726310]:hover {
+  background: #1d4ed8;
+}
+.modal-overlay[_ngcontent-ng-c1075726310] {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+.modal-card[_ngcontent-ng-c1075726310] {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  width: 95%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  animation: _ngcontent-ng-c1075726310_slideUp 0.3s;
+}
+@keyframes _ngcontent-ng-c1075726310_slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.modal-header[_ngcontent-ng-c1075726310] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #f1f5f9;
+}
+.modal-header[_ngcontent-ng-c1075726310]   h2[_ngcontent-ng-c1075726310] {
+  font-size: 18px;
+  color: #0f172a;
+  margin: 0;
+}
+.btn-close[_ngcontent-ng-c1075726310] {
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-close[_ngcontent-ng-c1075726310]:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.modal-subtitulo[_ngcontent-ng-c1075726310] {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+.ticket-info[_ngcontent-ng-c1075726310] {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #e2e8f0;
+}
+.info-row[_ngcontent-ng-c1075726310] {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+.info-row[_ngcontent-ng-c1075726310]   span[_ngcontent-ng-c1075726310] {
+  font-weight: 600;
+  color: #64748b;
+  min-width: 70px;
+}
+.falla[_ngcontent-ng-c1075726310] {
+  color: #dc2626;
+  background: #fef2f2;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+.form-grid[_ngcontent-ng-c1075726310] {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.form-grupo[_ngcontent-ng-c1075726310] {
+  margin-bottom: 14px;
+}
+.form-grupo[_ngcontent-ng-c1075726310]   label[_ngcontent-ng-c1075726310] {
+  display: block;
+  font-weight: 600;
+  color: #374151;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+.form-grupo[_ngcontent-ng-c1075726310]   input[_ngcontent-ng-c1075726310], 
+.form-grupo[_ngcontent-ng-c1075726310]   textarea[_ngcontent-ng-c1075726310] {
+  width: 100%;
+  padding: 10px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  font-family: inherit;
+}
+.form-grupo[_ngcontent-ng-c1075726310]   input[_ngcontent-ng-c1075726310]:focus, 
+.form-grupo[_ngcontent-ng-c1075726310]   textarea[_ngcontent-ng-c1075726310]:focus {
+  border-color: #2563eb;
+}
+.form-grupo[_ngcontent-ng-c1075726310]   textarea[_ngcontent-ng-c1075726310] {
+  min-height: 100px;
+  resize: vertical;
+}
+.required[_ngcontent-ng-c1075726310] {
+  color: #dc2626;
+}
+.botones[_ngcontent-ng-c1075726310] {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+}
+.btn-cancelar[_ngcontent-ng-c1075726310] {
+  padding: 10px 20px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-guardar[_ngcontent-ng-c1075726310] {
+  padding: 10px 24px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-guardar[_ngcontent-ng-c1075726310]:hover {
+  background: #1d4ed8;
+}
+.btn-guardar[_ngcontent-ng-c1075726310]:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+@media (max-width: 768px) {
+  .eval-page[_ngcontent-ng-c1075726310] {
+    padding: 14px;
+  }
+  .form-grid[_ngcontent-ng-c1075726310] {
+    grid-template-columns: 1fr;
+  }
+  .botones[_ngcontent-ng-c1075726310] {
+    flex-direction: column;
+  }
+}
+/*# sourceMappingURL=/tecnico-evaluacion-equipos.css.map */</style></head>
+<body>
+  <app-root ng-version="22.0.1"><router-outlet></router-outlet><app-tecnico-layout _nghost-ng-c1880211882=""><div _ngcontent-ng-c1880211882="" class="tecnico-layout"><aside _ngcontent-ng-c1880211882="" class="sidebar"><div _ngcontent-ng-c1880211882="" class="logo"><h2 _ngcontent-ng-c1880211882="">🔧 Panel Técnico</h2><p _ngcontent-ng-c1880211882="">Sistema de Reparaciones</p></div><div _ngcontent-ng-c1880211882="" class="user-info"><img _ngcontent-ng-c1880211882="" src="https://cdn-icons-png.flaticon.com/512/9440/9440361.png" alt="Avatar Técnico"><span _ngcontent-ng-c1880211882="">ADRIANA ILDEFONZA VASQUEZ CARLOS</span><p _ngcontent-ng-c1880211882="">Técnico Especialista</p></div><nav _ngcontent-ng-c1880211882="" class="nav-menu"><a _ngcontent-ng-c1880211882="" routerlink="/tecnico/dashboard" routerlinkactive="active" href="/tecnico/dashboard"><span _ngcontent-ng-c1880211882="" class="icon">📊</span><span _ngcontent-ng-c1880211882="">Dashboard</span></a><a _ngcontent-ng-c1880211882="" routerlink="/tecnico/ordenes-asignadas" routerlinkactive="active" href="/tecnico/ordenes-asignadas" class=""><span _ngcontent-ng-c1880211882="" class="icon">📋</span><span _ngcontent-ng-c1880211882="">Órdenes Asignadas</span></a><a _ngcontent-ng-c1880211882="" routerlink="/tecnico/evaluacion-equipos" routerlinkactive="active" href="/tecnico/evaluacion-equipos" class="active"><span _ngcontent-ng-c1880211882="" class="icon">🔍</span><span _ngcontent-ng-c1880211882="">Diagnóstico</span></a><a _ngcontent-ng-c1880211882="" routerlink="/tecnico/cotizaciones" routerlinkactive="active" href="/tecnico/cotizaciones"><span _ngcontent-ng-c1880211882="" class="icon">💰</span><span _ngcontent-ng-c1880211882="">Cotizaciones</span></a><a _ngcontent-ng-c1880211882="" routerlink="/tecnico/reparaciones" routerlinkactive="active" href="/tecnico/reparaciones"><span _ngcontent-ng-c1880211882="" class="icon">🔧</span><span _ngcontent-ng-c1880211882="">Reparaciones</span></a><a _ngcontent-ng-c1880211882="" routerlink="/tecnico/pruebas-funcionamiento" routerlinkactive="active" href="/tecnico/pruebas-funcionamiento"><span _ngcontent-ng-c1880211882="" class="icon">🧪</span><span _ngcontent-ng-c1880211882="">Pruebas</span></a></nav><div _ngcontent-ng-c1880211882="" class="sidebar-footer"><button _ngcontent-ng-c1880211882="" class="btn-logout">🚪 Cerrar Sesión</button></div></aside><main _ngcontent-ng-c1880211882="" class="main-content"><router-outlet _ngcontent-ng-c1880211882=""></router-outlet><app-evaluaciones _nghost-ng-c1075726310=""><div _ngcontent-ng-c1075726310="" class="eval-page"><div _ngcontent-ng-c1075726310="" class="header"><div _ngcontent-ng-c1075726310=""><h1 _ngcontent-ng-c1075726310="">🔧 Panel de Evaluación Técnica</h1><p _ngcontent-ng-c1075726310="">Revisa y diagnostica los equipos asignados a tus órdenes de trabajo</p></div><button _ngcontent-ng-c1075726310="" class="btn-recargar"> 🔄 Actualizar </button></div><!--container--><!--container--><!--container--><div _ngcontent-ng-c1075726310="" class="empty"><span _ngcontent-ng-c1075726310="">📭</span><p _ngcontent-ng-c1075726310="">No tienes órdenes pendientes de evaluación</p></div><!--container--><!--container--></div><!--container--></app-evaluaciones><!--container--></main></div></app-tecnico-layout><!--container--></app-root>
+<script src="main.js" type="module"></script>
+
+</body></html>

@@ -11,10 +11,10 @@ public class PersonaModel {
     @Column(name = "id_persona")
     private Integer idPersona;
 
-    @Column(name = "nombres", length = 100)
+    @Column(name = "nombre", length = 100)
     private String nombre;  // En BD es "nombres"
 
-    @Column(name = "apellidos", length = 100)
+    @Column(name = "apellido", length = 100)
     private String apellido;  // En BD es "apellidos"
 
     @Column(length = 255)

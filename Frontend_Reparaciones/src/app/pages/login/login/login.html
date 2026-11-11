@@ -1,15 +1,23 @@
 <div class="contenedor">
   <div class="login-box">
 
-    <!-- Mensaje de éxito -->
+    <!-- Mensaje de éxito al crear cuenta -->
     @if (cuentaCreada) {
       <div class="alerta-exito">
         ✅ ¡Cuenta creada exitosamente! Ya puedes iniciar sesión.
       </div>
     }
 
-    <!-- Error login -->
-    @if (errorLogin) {
+    <!-- Mensaje de cuenta bloqueada (DEF-02) -->
+    @if (cuentaBloqueada) {
+      <div class="alerta-error" style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-bottom: 15px; text-align: center;">
+        🔒 <strong>Cuenta bloqueada</strong><br>
+        Has superado el número máximo de intentos fallidos. Por favor, contacta al administrador para desbloquear tu cuenta.
+      </div>
+    }
+
+    <!-- Error login genérico (se oculta si ya se muestra el de bloqueo) -->
+    @if (errorLogin && !cuentaBloqueada) {
       <div class="alerta-error">⚠️ {{ errorLogin }}</div>
     }
 
@@ -25,14 +33,12 @@
         <label>Contraseña</label>
         <input type="password" placeholder="Contraseña" [(ngModel)]="contrasena" name="contrasena" required>
       </div>
-      <button type="submit" class="btn-login" [disabled]="cargando">
+      
+      <!-- El botón se deshabilita si está cargando O si la cuenta ya está bloqueada -->
+      <button type="submit" class="btn-login" [disabled]="cargando || cuentaBloqueada">
         {{ cargando ? '⏳ Ingresando...' : 'Iniciar sesión' }}
       </button>
-<!--
-      <div class="opciones">
-        <a href="#" class="link-btn" (click)="abrirOlvido(); $event.preventDefault()">¿Olvidaste tu contraseña?</a>
-      </div>
--->
+
       <div class="divider"></div>
       <div class="crear-cuenta">
         <button type="button" class="btn-crear-cuenta" (click)="abrirRegistro()">Crear cuenta nueva</button>
@@ -41,7 +47,7 @@
   </div>
 </div>
 
-<!-- MODAL OLVIDO CONTRASEÑA -->
+<!-- ==================== MODAL OLVIDO CONTRASEÑA ==================== -->
 @if (mostrarOlvido) {
   <div class="modal-overlay">
     <div class="modal-content">
@@ -72,7 +78,7 @@
   </div>
 }
 
-<!-- MODAL REGISTRO -->
+<!-- ==================== MODAL REGISTRO ==================== -->
 @if (mostrarRegistro) {
   <div class="modal-overlay">
     <div class="modal-content modal-registro">
@@ -183,4 +189,4 @@
       </form>
     </div>
   </div>
-}
+} 

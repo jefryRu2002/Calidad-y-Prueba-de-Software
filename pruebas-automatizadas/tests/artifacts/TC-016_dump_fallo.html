@@ -1,0 +1,508 @@
+<html lang="en"><head>
+  <script type="module" src="/@vite/client"></script>
+
+  <meta charset="utf-8">
+  <title>FrontendReparaciones</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  
+<link rel="stylesheet" href="styles.css"><style>
+*[_ngcontent-ng-c3901687643] {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body[_ngcontent-ng-c3901687643] {
+  font-family:
+    "Segoe UI",
+    Tahoma,
+    Geneva,
+    Verdana,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.contenedor[_ngcontent-ng-c3901687643] {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background:
+    linear-gradient(
+      135deg,
+      #0a1929 0%,
+      #1a365d 50%,
+      #0d2137 100%);
+  padding: 20px;
+}
+.login-box[_ngcontent-ng-c3901687643] {
+  background: #ffffff;
+  padding: 40px 32px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  width: 440px;
+  max-width: 100%;
+}
+.login-header[_ngcontent-ng-c3901687643] {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.logo-icono[_ngcontent-ng-c3901687643] {
+  font-size: 40px;
+  margin-bottom: 8px;
+}
+.titulo[_ngcontent-ng-c3901687643] {
+  color: #0a1929;
+  margin-bottom: 4px;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+}
+.subtitulo[_ngcontent-ng-c3901687643] {
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.alerta-exito[_ngcontent-ng-c3901687643] {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #86efac;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  animation: _ngcontent-ng-c3901687643_slideDown 0.3s ease;
+}
+.alerta-error[_ngcontent-ng-c3901687643] {
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  animation: _ngcontent-ng-c3901687643_shakeError 0.4s ease;
+}
+.alerta-error.alerta-temporal[_ngcontent-ng-c3901687643] {
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+.alerta-error.alerta-permanente[_ngcontent-ng-c3901687643] {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 2px solid #dc2626;
+  font-weight: 600;
+}
+@keyframes _ngcontent-ng-c3901687643_slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes _ngcontent-ng-c3901687643_shakeError {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+.intentos-restantes[_ngcontent-ng-c3901687643] {
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: #64748b;
+}
+.intentos-barra[_ngcontent-ng-c3901687643] {
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.intentos-progreso[_ngcontent-ng-c3901687643] {
+  height: 100%;
+  background:
+    linear-gradient(
+      90deg,
+      #dc2626,
+      #f59e0b,
+      #10b981);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+.intentos-restantes[_ngcontent-ng-c3901687643]   strong[_ngcontent-ng-c3901687643] {
+  color: #2563eb;
+  font-weight: 700;
+}
+.login-form[_ngcontent-ng-c3901687643] {
+  width: 100%;
+}
+.input-group[_ngcontent-ng-c3901687643] {
+  margin-bottom: 16px;
+}
+.input-group[_ngcontent-ng-c3901687643]   label[_ngcontent-ng-c3901687643] {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 13px;
+}
+.input-group[_ngcontent-ng-c3901687643]   input[_ngcontent-ng-c3901687643] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+  background: #ffffff;
+  color: #1e293b;
+}
+.input-group[_ngcontent-ng-c3901687643]   input[_ngcontent-ng-c3901687643]::placeholder {
+  color: #94a3b8;
+}
+.input-group[_ngcontent-ng-c3901687643]   input[_ngcontent-ng-c3901687643]:focus {
+  border-color: #1e40af;
+  box-shadow: 0 0 0 4px rgba(30, 64, 175, 0.1);
+}
+.input-group[_ngcontent-ng-c3901687643]   input[_ngcontent-ng-c3901687643]:disabled {
+  background: #f1f5f9;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+.input-readonly[_ngcontent-ng-c3901687643], 
+.input-group[_ngcontent-ng-c3901687643]   input[readonly][_ngcontent-ng-c3901687643] {
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+  cursor: not-allowed !important;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.error-fecha[_ngcontent-ng-c3901687643] {
+  display: block;
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.btn-login[_ngcontent-ng-c3901687643] {
+  width: 100%;
+  padding: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      #1e3a5f 0%,
+      #1e40af 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 6px;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-login[_ngcontent-ng-c3901687643]:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(30, 64, 175, 0.4);
+}
+.btn-login[_ngcontent-ng-c3901687643]:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.spinner-btn[_ngcontent-ng-c3901687643] {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: _ngcontent-ng-c3901687643_spin 0.6s linear infinite;
+}
+@keyframes _ngcontent-ng-c3901687643_spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.opciones[_ngcontent-ng-c3901687643] {
+  text-align: center;
+  margin: 16px 0;
+}
+.opciones[_ngcontent-ng-c3901687643]   a[_ngcontent-ng-c3901687643] {
+  color: #1e40af;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.opciones[_ngcontent-ng-c3901687643]   a[_ngcontent-ng-c3901687643]:hover {
+  color: #1e3a8a;
+  text-decoration: underline;
+}
+.divider[_ngcontent-ng-c3901687643] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0;
+  color: #94a3b8;
+  font-size: 12px;
+}
+.divider[_ngcontent-ng-c3901687643]::before, 
+.divider[_ngcontent-ng-c3901687643]::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+.crear-cuenta[_ngcontent-ng-c3901687643] {
+  display: flex;
+  justify-content: center;
+}
+.btn-crear-cuenta[_ngcontent-ng-c3901687643] {
+  padding: 14px 30px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+}
+.btn-crear-cuenta[_ngcontent-ng-c3901687643]:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+.modal-overlay[_ngcontent-ng-c3901687643] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 25, 41, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: _ngcontent-ng-c3901687643_fadeIn 0.2s ease;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+@keyframes _ngcontent-ng-c3901687643_fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.modal-content[_ngcontent-ng-c3901687643] {
+  background: #ffffff;
+  padding: 32px 28px;
+  border-radius: 20px;
+  width: 440px;
+  max-width: 92%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: _ngcontent-ng-c3901687643_slideUp 0.3s ease;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+}
+@keyframes _ngcontent-ng-c3901687643_slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.modal-close[_ngcontent-ng-c3901687643] {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #475569;
+  z-index: 10;
+}
+.modal-close[_ngcontent-ng-c3901687643]:hover {
+  background: #fee2e2;
+  color: #dc2626;
+}
+.modal-icono[_ngcontent-ng-c3901687643] {
+  font-size: 44px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+.modal-content[_ngcontent-ng-c3901687643]   h2[_ngcontent-ng-c3901687643] {
+  margin-bottom: 8px;
+  color: #0a1929;
+  font-size: 22px;
+  text-align: center;
+}
+.modal-content[_ngcontent-ng-c3901687643]   p[_ngcontent-ng-c3901687643] {
+  color: #64748b;
+  margin-bottom: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+.modal-nota[_ngcontent-ng-c3901687643] {
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  margin-top: 8px !important;
+}
+.modal-exito[_ngcontent-ng-c3901687643] {
+  text-align: center;
+}
+.btn-enviar[_ngcontent-ng-c3901687643] {
+  width: 100%;
+  padding: 14px;
+  background:
+    linear-gradient(
+      135deg,
+      #1e3a5f 0%,
+      #1e40af 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+}
+.btn-enviar[_ngcontent-ng-c3901687643]:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+.btn-enviar[_ngcontent-ng-c3901687643]:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+.btn-cancelar[_ngcontent-ng-c3901687643] {
+  width: 100%;
+  padding: 14px;
+  background: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+  transition: all 0.2s;
+}
+.btn-cancelar[_ngcontent-ng-c3901687643]:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+.dni-search[_ngcontent-ng-c3901687643] {
+  display: flex;
+  gap: 8px;
+}
+.dni-search[_ngcontent-ng-c3901687643]   input[_ngcontent-ng-c3901687643] {
+  flex: 1;
+}
+.btn-buscar[_ngcontent-ng-c3901687643] {
+  background: #f1f5f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0 14px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-buscar[_ngcontent-ng-c3901687643]:hover:not(:disabled) {
+  background: #e2e8f0;
+  border-color: #1e40af;
+}
+.btn-buscar[_ngcontent-ng-c3901687643]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.loading-reniec[_ngcontent-ng-c3901687643] {
+  text-align: center;
+  padding: 8px;
+  color: #64748b;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+.form-registro[_ngcontent-ng-c3901687643] {
+  width: 100%;
+}
+.modal-registro[_ngcontent-ng-c3901687643] {
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.modal-registro[_ngcontent-ng-c3901687643]::-webkit-scrollbar {
+  width: 8px;
+}
+.modal-registro[_ngcontent-ng-c3901687643]::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+.modal-registro[_ngcontent-ng-c3901687643]::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+.modal-registro[_ngcontent-ng-c3901687643]::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+@media (max-width: 480px) {
+  .login-box[_ngcontent-ng-c3901687643] {
+    padding: 30px 20px;
+  }
+  .modal-content[_ngcontent-ng-c3901687643] {
+    padding: 24px 18px;
+  }
+  .titulo[_ngcontent-ng-c3901687643] {
+    font-size: 22px;
+  }
+  .btn-login[_ngcontent-ng-c3901687643], 
+   .btn-enviar[_ngcontent-ng-c3901687643], 
+   .btn-cancelar[_ngcontent-ng-c3901687643], 
+   .btn-crear-cuenta[_ngcontent-ng-c3901687643] {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+/*# sourceMappingURL=/login.css.map */</style></head>
+<body>
+  <app-root ng-version="22.0.1"><router-outlet></router-outlet><app-login _nghost-ng-c3901687643=""><div _ngcontent-ng-c3901687643="" class="contenedor"><div _ngcontent-ng-c3901687643="" class="login-box"><!--container--><div _ngcontent-ng-c3901687643="" class="alerta-error">⚠️ Credenciales incorrectas</div><!--container--><h2 _ngcontent-ng-c3901687643="" class="titulo">Bienvenido a ColTech</h2><p _ngcontent-ng-c3901687643="" class="subtitulo">Ingresa tus credenciales para continuar</p><form _ngcontent-ng-c3901687643="" novalidate="" class="ng-dirty ng-touched ng-valid ng-submitted"><div _ngcontent-ng-c3901687643="" class="input-group"><label _ngcontent-ng-c3901687643="">Correo</label><input _ngcontent-ng-c3901687643="" type="text" placeholder="Correo o usuario" name="usuario" required="" class="ng-dirty ng-valid ng-touched"></div><div _ngcontent-ng-c3901687643="" class="input-group"><label _ngcontent-ng-c3901687643="">Contraseña</label><input _ngcontent-ng-c3901687643="" type="password" placeholder="Contraseña" name="contrasena" required="" class="ng-dirty ng-valid ng-touched"></div><button _ngcontent-ng-c3901687643="" type="submit" class="btn-login"> Iniciar sesión </button><div _ngcontent-ng-c3901687643="" class="divider"></div><div _ngcontent-ng-c3901687643="" class="crear-cuenta"><button _ngcontent-ng-c3901687643="" type="button" class="btn-crear-cuenta">Crear cuenta nueva</button></div></form></div></div><!--container--><!--container--></app-login><!--container--></app-root>
+<script src="main.js" type="module"></script>
+
+</body></html>

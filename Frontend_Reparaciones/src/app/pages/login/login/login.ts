@@ -17,6 +17,7 @@ export class Login {
   cargando: boolean = false;
   errorLogin: string = '';
   cuentaCreada: boolean = false;
+  cuentaBloqueada: boolean = false;
 
   mostrarOlvido: boolean = false;
   correoRecuperacion: string = '';
@@ -47,7 +48,7 @@ export class Login {
     private cdr: ChangeDetectorRef
   ) {}
 
-  // ==================== HELPERS DE ERROR (auto-limpieza a los 3s) ====================
+  // ==================== HELPERS DE ERROR ====================
   private mostrarErrorLogin(mensaje: string) {
     if (this.timeoutErrorLogin) clearTimeout(this.timeoutErrorLogin);
     this.errorLogin = mensaje;
@@ -68,12 +69,21 @@ export class Login {
     }, 3000);
   }
 
-  // ==================== CALENDARIO (bloquear teclado en fecha) ====================
-  abrirCalendario(event: Event) {
-    const input = event.target as HTMLInputElement;
-    // Abre el selector de fecha nativo (Chrome, Edge, Opera)
-    // En navegadores que no lo soportan, simplemente no hace nada
-    input.showPicker?.();
+  // ==================== LÓGICA DE BLOQUEO POR USUARIO ====================
+  
+  private obtenerIntentos(usuario: string): number {
+    const clave = `coltech_intentos_${usuario.toLowerCase().trim()}`;
+    return Number(localStorage.getItem(clave) || '0');
+  }
+
+  private guardarIntentos(usuario: string, intentos: number) {
+    const clave = `coltech_intentos_${usuario.toLowerCase().trim()}`;
+    localStorage.setItem(clave, intentos.toString());
+  }
+
+  private limpiarIntentos(usuario: string) {
+    const clave = `coltech_intentos_${usuario.toLowerCase().trim()}`;
+    localStorage.removeItem(clave);
   }
 
   // ==================== INICIAR SESIÓN ====================
@@ -83,8 +93,15 @@ export class Login {
       return;
     }
 
+    const intentosActuales = this.obtenerIntentos(this.usuario);
+    if (intentosActuales >= 3) {
+      this.activarBloqueoTemporal();
+      return;
+    }
+
     this.cargando = true;
     this.errorLogin = '';
+    this.cuentaBloqueada = false;
     this.cdr.detectChanges();
 
     this.http.post(`${this.apiUrl}/auth/login`, {
@@ -92,43 +109,86 @@ export class Login {
       contrasena: this.contrasena
     }).subscribe({
       next: (resp: any) => {
-        const usuarioData = {
-          idPersona: resp.idPersona || '',
-          nombre: resp.nombre || '',
-          apellido: resp.apellido || '',
-          correo: resp.correo || this.usuario,
-          telefono: resp.telefono || '',
-          dni: resp.dni || '',
-          rol: resp.rol?.toUpperCase() || 'CLIENTE'
-        };
-
-        localStorage.setItem('usuario', JSON.stringify(usuarioData));
-        localStorage.setItem('idPersona', usuarioData.idPersona.toString());
-        if (resp.token) localStorage.setItem('token', resp.token);
-
-        this.cargando = false;
-        this.cdr.detectChanges();
-        this.redirigirPorRol(resp.rol);
+        this.limpiarIntentos(this.usuario);
+        this.guardarSesionYRedirigir(resp);
       },
       error: (err) => {
         this.cargando = false;
         this.cdr.detectChanges();
-
-        if (err.status === 401 || err.status === 403) {
-          this.mostrarErrorLogin('Credenciales incorrectas');
-        } else if (err.status === 0) {
-          this.mostrarErrorLogin('No se pudo conectar al servidor');
-        } else {
-          this.mostrarErrorLogin(err.error?.error || 'Error al iniciar sesión');
-        }
+        this.manejarErrorLogin(err);
       }
     });
   }
 
+  private guardarSesionYRedirigir(resp: any) {
+    const usuarioData = {
+      idPersona: resp.idPersona || '',
+      nombre: resp.nombre || '',
+      apellido: resp.apellido || '',
+      correo: resp.correo || this.usuario,
+      telefono: resp.telefono || '',
+      dni: resp.dni || '',
+      rol: resp.rol?.toUpperCase() || 'CLIENTE'
+    };
+
+    localStorage.setItem('usuario', JSON.stringify(usuarioData));
+    localStorage.setItem('idPersona', usuarioData.idPersona.toString());
+    if (resp.token) localStorage.setItem('token', resp.token);
+
+    this.cargando = false;
+    this.cdr.detectChanges();
+    this.redirigirPorRol(resp.rol);
+  }
+
+  private manejarErrorLogin(err: any) {
+    // Si el backend YA envía un código de bloqueo (423)
+    if (err.status === 423 || err.error?.error?.toLowerCase().includes('bloqueada')) {
+      this.activarBloqueoTemporal();
+      return;
+    }
+
+    // Credenciales incorrectas (401 / 403)
+    if (err.status === 401 || err.status === 403) {
+      let intentos = this.obtenerIntentos(this.usuario);
+      intentos++;
+      this.guardarIntentos(this.usuario, intentos);
+
+      if (intentos >= 3) {
+        this.activarBloqueoTemporal();
+      } else {
+        this.errorLogin = `Credenciales incorrectas. Intento ${intentos} de 3.`;
+        this.cdr.detectChanges();
+      }
+    } else if (err.status === 0) {
+      this.errorLogin = 'No se pudo conectar al servidor';
+      this.cdr.detectChanges();
+    } else {
+      this.errorLogin = err.error?.error || 'Error al iniciar sesión';
+      this.cdr.detectChanges();
+    }
+  }
+
+  /**
+   * Activa el mensaje de bloqueo, limpia el formulario y después de 5 segundos
+   * "refresca" la pantalla para permitir intentar con otra cuenta.
+   */
+  private activarBloqueoTemporal() {
+    // 1. Mostrar el bloqueo y limpiar campos
+    this.cuentaBloqueada = true;
+    this.usuario = '';
+    this.contrasena = '';
+    this.errorLogin = '';
+    this.cdr.detectChanges();
+
+    // 2. Temporizador para "refrescar" la pantalla
+    setTimeout(() => {
+      this.cuentaBloqueada = false;
+      this.cdr.detectChanges();
+    }, 5000); // 5 segundos (puedes cambiarlo a 3000 si quieres que sea más rápido)
+  }
+
   private redirigirPorRol(rol: string) {
     const r = rol?.toUpperCase();
-    console.log('>>> Redirigiendo por rol:', r);
-
     switch (r) {
       case 'ADMINISTRADOR':
       case 'ADMIN':
@@ -187,6 +247,12 @@ export class Login {
     this.errorLogin = '';
 
     this.mostrarRegistro = true;
+    this.limpiarFormularioRegistro();
+    this.registrando = false;
+    this.cdr.detectChanges();
+  }
+
+  private limpiarFormularioRegistro() {
     this.dni = '';
     this.nombres = '';
     this.apellidos = '';
@@ -195,8 +261,6 @@ export class Login {
     this.fechaNacimiento = '';
     this.contrasenaRegistro = '';
     this.confirmarContrasena = '';
-    this.registrando = false;
-    this.cdr.detectChanges();
   }
 
   cerrarRegistro() {
@@ -240,7 +304,6 @@ export class Login {
     });
   }
 
-  // Validar solo números en teléfono
   soloNumeros(event: any): boolean {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode > 31 && (charCode < 48 || charCode > 57)) {
@@ -249,7 +312,6 @@ export class Login {
     return true;
   }
 
-  // Solo permite dígitos en el DNI (máx 8)
   onDniInput(event: any) {
     const input = event.target as HTMLInputElement;
     const valor = input.value.replace(/\D/g, '').slice(0, 8);
@@ -258,7 +320,6 @@ export class Login {
     this.onDniChange();
   }
 
-  // Solo permite dígitos en el teléfono (máx 9)
   onTelefonoInput(event: any) {
     const input = event.target as HTMLInputElement;
     const valor = input.value.replace(/\D/g, '').slice(0, 9);
@@ -267,49 +328,33 @@ export class Login {
   }
 
   // ==================== REGISTRAR ====================
+  private validarFormularioRegistro(): string | null {
+    if (!this.dni || this.dni.length !== 8) return 'DNI inválido (8 dígitos)';
+    if (!this.nombres.trim()) return 'Ingresa tus nombres';
+    if (!this.apellidos.trim()) return 'Ingresa tus apellidos';
+    if (!this.fechaNacimiento) return 'Debes ingresar tu fecha de nacimiento';
+    if (!this.correo?.includes('@')) return 'Correo inválido';
+    
+    if (!this.telefono || this.telefono.length !== 9 || !/^\d{9}$/.test(this.telefono)) {
+      return 'Teléfono inválido (debe tener 9 dígitos)';
+    }
+    
+    if (this.contrasenaRegistro.length < 6) return 'Contraseña muy corta (mín 6)';
+    if (this.contrasenaRegistro !== this.confirmarContrasena) return 'Las contraseñas no coinciden';
+    
+    return null;
+  }
+
   registrarUsuario() {
     this.errorRegistro = '';
-
-    // Validaciones
-    if (!this.dni || this.dni.length !== 8) {
-      this.mostrarErrorRegistro('DNI inválido (8 dígitos)');
-      return;
-    }
-    if (!this.nombres.trim()) {
-      this.mostrarErrorRegistro('Ingresa tus nombres');
-      return;
-    }
-    if (!this.apellidos.trim()) {
-      this.mostrarErrorRegistro('Ingresa tus apellidos');
-      return;
-    }
-    if (!this.fechaNacimiento) {
-      this.mostrarErrorRegistro('Debes ingresar tu fecha de nacimiento');
-      return;
-    }
-    if (!this.correo?.includes('@')) {
-      this.mostrarErrorRegistro('Correo inválido');
-      return;
-    }
-    if (!this.telefono || this.telefono.length !== 9) {
-      this.mostrarErrorRegistro('Teléfono inválido (debe tener 9 dígitos)');
-      return;
-    }
-    if (!/^\d{9}$/.test(this.telefono)) {
-      this.mostrarErrorRegistro('Teléfono inválido (solo números, 9 dígitos)');
-      return;
-    }
-    if (this.contrasenaRegistro.length < 6) {
-      this.mostrarErrorRegistro('Contraseña muy corta (mín 6)');
-      return;
-    }
-    if (this.contrasenaRegistro !== this.confirmarContrasena) {
-      this.mostrarErrorRegistro('Las contraseñas no coinciden');
+    
+    const errorValidacion = this.validarFormularioRegistro();
+    if (errorValidacion) {
+      this.mostrarErrorRegistro(errorValidacion);
       return;
     }
 
     this.registrando = true;
-    this.errorRegistro = '';
     this.cdr.detectChanges();
 
     const body = {
@@ -322,11 +367,8 @@ export class Login {
       fechaNacimiento: this.fechaNacimiento
     };
 
-    console.log('📤 Registrando CLIENTE:', body);
-
     this.http.post(`${this.apiUrl}/auth/register`, body).subscribe({
       next: (resp: any) => {
-        console.log('✅ Registro exitoso:', resp);
         this.registrando = false;
         this.cerrarRegistro();
         this.cuentaCreada = true;
@@ -340,18 +382,25 @@ export class Login {
       },
       error: (err) => {
         this.registrando = false;
-        console.error('❌ Error registro:', err);
-
-        if (err.status === 409) {
-          this.mostrarErrorRegistro(err.error?.error || 'El correo ya está registrado');
-        } else if (err.status === 400) {
-          this.mostrarErrorRegistro(err.error?.error || 'Datos inválidos');
-        } else if (err.status === 0) {
-          this.mostrarErrorRegistro('No se pudo conectar al servidor');
-        } else {
-          this.mostrarErrorRegistro(err.error?.error || 'Error al crear la cuenta');
-        }
+        this.manejarErrorRegistro(err);
       }
     });
+  }
+
+  private manejarErrorRegistro(err: any) {
+    switch (err.status) {
+      case 409:
+        this.mostrarErrorRegistro(err.error?.error || 'El correo ya está registrado');
+        break;
+      case 400:
+        this.mostrarErrorRegistro(err.error?.error || 'Datos inválidos');
+        break;
+      case 0:
+        this.mostrarErrorRegistro('No se pudo conectar al servidor');
+        break;
+      default:
+        this.mostrarErrorRegistro(err.error?.error || 'Error al crear la cuenta');
+        break;
+    }
   }
 }

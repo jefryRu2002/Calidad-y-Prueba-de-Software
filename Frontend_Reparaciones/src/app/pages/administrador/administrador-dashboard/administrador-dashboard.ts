@@ -1,6 +1,8 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-administrador-dashboard',
@@ -39,67 +41,126 @@ export class AdministradorDashboard implements OnInit {
     this.error = '';
     this.cdr.detectChanges();
 
-    // 1. Órdenes de trabajo
-    this.http.get<any[]>(`${this.apiUrl}/ordenes-trabajo`).subscribe({
-      next: (ordenes) => {
-        this.estadisticas.reparaciones = ordenes?.length || 0;
-        this.estadisticas.pendientes = (ordenes || []).filter(o => 
-          o.estado === 'PENDIENTE' || o.estado === 'ASIGNADO' || o.estado === 'EN_PROCESO'
-        ).length;
+    forkJoin({
+      ordenes: this.http.get<any>(`${this.apiUrl}/ordenes-trabajo`).pipe(
+        catchError((err) => {
+          console.error('❌ Error al cargar órdenes:', {
+            status: err.status,
+            statusText: err.statusText,
+            message: err.message,
+            url: err.url,
+            error: err.error
+          });
+          this.error = '❌ Error al conectar con el servidor';
+          return of([]);
+        })
+      ),
+      pagos: this.http.get<any>(`${this.apiUrl}/pagos`).pipe(
+        catchError((err) => {
+          console.warn('⚠️ No se cargaron pagos:', err.status);
+          return of([]);
+        })
+      ),
+      clientes: this.http.get<any>(`${this.apiUrl}/clientes`).pipe(
+        catchError((err) => {
+          console.error('❌ Error al cargar clientes:', {
+            status: err.status,
+            statusText: err.statusText,
+            message: err.message,
+            url: err.url,
+            error: err.error
+          });
+          return of([]);
+        })
+      ),
+      tecnicos: this.http.get<any>(`${this.apiUrl}/tecnicos`).pipe(
+        catchError((err) => {
+          console.error('❌ Error al cargar técnicos:', {
+            status: err.status,
+            statusText: err.statusText,
+            message: err.message,
+            url: err.url,
+            error: err.error
+          });
+          return of([]);
+        })
+      )
+    }).subscribe(({ ordenes, pagos, clientes, tecnicos }) => {
 
-        // Últimas 10 reparaciones
-        this.ultimasReparaciones = (ordenes || [])
-          .sort((a, b) => new Date(b.fechaInicio || 0).getTime() - new Date(a.fechaInicio || 0).getTime())
-          .slice(0, 10)
-          .map(orden => ({
-            id: orden.idOrden || 0,
-            ticket: 'OT-' + (orden.idOrden || 0),
-            cliente: orden.nombreCliente || 'Sin cliente',
-            equipo: orden.equipo || (orden.marca || '') + ' ' + (orden.modelo || '') || 'Sin equipo',
-            estado: this.mapearEstado(orden.estado),
-            tecnico: orden.nombreTecnico || 'No asignado',
-            fecha: orden.fechaInicio || new Date()
-          }));
+      // ---- Normalizar respuestas a arrays ----
+      const listaOrdenes = this.extraerLista(ordenes, 'ordenes');
+      const listaPagos = this.extraerLista(pagos, 'pagos');
+      const listaClientes = this.extraerLista(clientes, 'clientes');
+      const listaTecnicos = this.extraerLista(tecnicos, 'tecnicos');
 
-        this.cargando = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('❌ Error al cargar órdenes:', err);
-        this.error = '❌ Error al conectar con el servidor';
-        this.cargando = false;
-        this.cdr.detectChanges();
-      }
+      // Debug temporal: mira en consola la forma real que llega del backend
+      console.log('📦 RAW /clientes:', clientes);
+      console.log('📦 RAW /tecnicos:', tecnicos);
+      console.log('📊 Conteos:', {
+        ordenes: listaOrdenes.length,
+        pagos: listaPagos.length,
+        clientes: listaClientes.length,
+        tecnicos: listaTecnicos.length
+      });
+
+      // ---- Órdenes ----
+      this.estadisticas.reparaciones = listaOrdenes.length;
+      this.estadisticas.pendientes = listaOrdenes.filter((o: any) =>
+        o.estado === 'PENDIENTE' ||
+        o.estado === 'ASIGNADO' ||
+        o.estado === 'EN_PROCESO'
+      ).length;
+
+      // Últimas 10 reparaciones
+      this.ultimasReparaciones = listaOrdenes
+        .sort((a: any, b: any) =>
+          new Date(b.fechaInicio || 0).getTime() - new Date(a.fechaInicio || 0).getTime()
+        )
+        .slice(0, 10)
+        .map((orden: any) => ({
+          id: orden.idOrden || 0,
+          ticket: 'OT-' + (orden.idOrden || 0),
+          cliente: orden.nombreCliente || 'Sin cliente',
+          equipo: orden.equipo || `${orden.marca || ''} ${orden.modelo || ''}`.trim() || 'Sin equipo',
+          estado: this.mapearEstado(orden.estado),
+          tecnico: orden.nombreTecnico || 'No asignado',
+          fecha: orden.fechaInicio || new Date()
+        }));
+
+      // ---- Ingresos desde pagos aprobados ----
+      this.estadisticas.ingresos = listaPagos
+        .filter((p: any) => p.estado === 'APROBADO' || p.estado === 'PAGADO')
+        .reduce((sum: number, p: any) => sum + (p.monto || 0), 0);
+
+      // ---- Clientes ----
+      this.estadisticas.clientes = listaClientes.length;
+
+      // ---- Técnicos ----
+      this.estadisticas.tecnicos = listaTecnicos.length;
+
+      this.cargando = false;
+      this.cdr.detectChanges();
     });
+  }
 
-    // 2. Ingresos desde pagos aprobados (UNA SOLA fuente: pagos)
-    this.http.get<any[]>(`${this.apiUrl}/pagos`).subscribe({
-      next: (pagos) => {
-        this.estadisticas.ingresos = (pagos || [])
-          .filter(p => p.estado === 'APROBADO' || p.estado === 'PAGADO')
-          .reduce((sum, p) => sum + (p.monto || 0), 0);
-        this.cdr.detectChanges();
-      },
-      error: () => console.log('⚠️ No se cargaron pagos')
-    });
-
-    // 3. Total clientes
-    this.http.get<any[]>(`${this.apiUrl}/clientes`).subscribe({
-      next: (data) => {
-        this.estadisticas.clientes = data?.length || 0;
-        this.cdr.detectChanges();
-      },
-      error: () => console.log('⚠️ No se cargaron clientes')
-    });
-
-    // 4. Total técnicos
-    this.http.get<any[]>(`${this.apiUrl}/tecnicos`).subscribe({
-      next: (data) => {
-        this.estadisticas.tecnicos = data?.length || 0;
-        this.cdr.detectChanges();
-      },
-      error: () => console.log('⚠️ No se cargaron técnicos')
-    });
+  /**
+   * Normaliza cualquier respuesta del backend a un array.
+   * Soporta:
+   *  - Array plano: [ {...}, {...} ]
+   *  - Spring Page: { content: [...], totalElements: N }
+   *  - Envoltorio: { data: [...] } | { clientes: [...] } | { tecnicos: [...] } | { ordenes: [...] } | { pagos: [...] }
+   *  - items / results
+   *  - null / undefined → []
+   */
+  private extraerLista(respuesta: any, clave: string): any[] {
+    if (Array.isArray(respuesta)) return respuesta;
+    if (respuesta == null) return [];
+    if (Array.isArray(respuesta.content)) return respuesta.content;
+    if (Array.isArray(respuesta.data)) return respuesta.data;
+    if (Array.isArray(respuesta[clave])) return respuesta[clave];
+    if (Array.isArray(respuesta.items)) return respuesta.items;
+    if (Array.isArray(respuesta.results)) return respuesta.results;
+    return [];
   }
 
   mapearEstado(estado: string): string {
@@ -130,10 +191,10 @@ export class AdministradorDashboard implements OnInit {
   }
 
   formatearMonto(monto: number): string {
-    return new Intl.NumberFormat('es-PE', { 
-      style: 'currency', 
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
       currency: 'PEN',
-      minimumFractionDigits: 2 
+      minimumFractionDigits: 2
     }).format(monto || 0);
   }
 
