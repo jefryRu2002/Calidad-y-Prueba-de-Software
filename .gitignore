@@ -26,3 +26,15 @@ npm-debug.log*
 # Cache
 .cache/
 .parcel-cache/
+# SonarQube
+.scannerwork/
+
+# Evidencias de pruebas automatizadas
+pruebas-automatizadas/artifacts/
+pruebas-automatizadas/tests/artifacts/
+
+# Comprimidos
+*.zip
+
+# Repo anidado
+Calidad-y-Prueba-de-Software/
